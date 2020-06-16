@@ -1,2 +1,3 @@
 # react-native-linear-gradient-bn
-private use object
+
+原作者：https://github.com/react-native-community/react-native-linear-gradient
