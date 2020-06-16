@@ -1,0 +1,32 @@
+{
+  "name": "react-native-linear-gradient-bn",
+  "version": "0.0.1",
+  "description": "linear gradient benew private",
+  "main": "index",
+  "author": "ben",
+  "license": "MIT",
+  "files":[
+    "android",
+    "ios",
+    "*.js",
+    "BVLinearGradient.podspec"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:react-native-community/react-native-linear-gradient.git"
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "react-native": ">=0.55"
+  },
+  "devDependencies": {
+    "flow-bin": "^0.92",
+    "react": "^16.8.3",
+    "react-native": "^0.59.1"
+  },
+  "scripts": {
+    "flow": "yarn flow:android && yarn flow:ios",
+    "flow:android": "flow check --flowconfig-name .flowconfig.android",
+    "flow:ios": "flow check"
+  }
+}
