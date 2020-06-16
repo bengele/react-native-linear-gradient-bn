@@ -13,9 +13,14 @@ import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.text.TextUtils;
+import android.view.MotionEvent;
 import android.view.View;
 
 public class LinearGradientView extends View {
+
+    public interface OnClickListener{
+        void onClick(View v);
+    }
 
     private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint mMaskPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -38,6 +43,7 @@ public class LinearGradientView extends View {
     private int mTextColor = getResources().getColor(R.color.colorWhite);
     private int mTextSize = 15;
     private String mTextString = "";
+    private OnClickListener listener = null;
 
 
     public LinearGradientView(Context context) {
@@ -86,7 +92,7 @@ public class LinearGradientView extends View {
     }
 
     public void setBorderRadius(float radius){
-        for (int i = 0 ;i <= mBorderRadii.length;i++){
+        for (int i = 0 ;i < mBorderRadii.length;i++){
             mBorderRadii[i] = radius;
         }
         updatePath();
@@ -105,7 +111,33 @@ public class LinearGradientView extends View {
         drawGradient();
     }
 
+    public void setOnClickListener(OnClickListener listener){
+        this.listener = listener;
+    }
 
+
+    @Override
+    public boolean performClick() {
+        return super.performClick();
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                return true;
+            case MotionEvent.ACTION_UP:
+                //业务代码
+                performClick();
+                if (this.listener != null){
+                    this.listener.onClick(this);
+                }
+                return true;
+            case MotionEvent.ACTION_CANCEL:
+                return true;
+        }
+        return super.onTouchEvent(event);
+    }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
