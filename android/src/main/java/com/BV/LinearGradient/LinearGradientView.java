@@ -12,7 +12,9 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.Typeface;
+import android.text.TextPaint;
 import android.text.TextUtils;
+import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -24,7 +26,7 @@ public class LinearGradientView extends View {
 
     private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint mMaskPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private final Paint mTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final TextPaint mTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
 
     private Path mPathForBorderRadius;
     private RectF mTempRectForBorderRadius;
@@ -42,6 +44,7 @@ public class LinearGradientView extends View {
 
     private int mTextColor = getResources().getColor(R.color.colorWhite);
     private int mTextSize = 15;
+    private String mTextBold = "";
     private String mTextString = "";
     private OnClickListener listener = null;
 
@@ -49,6 +52,12 @@ public class LinearGradientView extends View {
     public LinearGradientView(Context context) {
         super(context);
     }
+
+
+    public LinearGradientView(Context context, AttributeSet attributeSet){
+        super(context,attributeSet);
+    }
+
 
     public void setStartPosition(float[] startPos) {
         mStartPos = startPos;
@@ -111,6 +120,12 @@ public class LinearGradientView extends View {
         drawGradient();
     }
 
+    public void setTextBold(String bold){
+        mTextBold = bold;
+        updatePath();
+        drawGradient();
+    }
+
     public void setOnClickListener(OnClickListener listener){
         this.listener = listener;
     }
@@ -162,7 +177,15 @@ public class LinearGradientView extends View {
     private void drawTextPaint() {
         mTextPaint.setColor(mTextColor);
         mTextPaint.setTextAlign(Paint.Align.CENTER);
-        Typeface font = Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL);
+
+        int fontWeightNumeric = mTextBold != null ? parseNumericFontWeight(mTextBold) : -1;
+        int fontWeight = Typeface.NORMAL;
+        if (fontWeightNumeric >= 500 || "bold".equals(mTextBold)) {
+            fontWeight = Typeface.BOLD;
+        } else if ("normal".equals(mTextBold) || (fontWeightNumeric != -1 && fontWeightNumeric < 500)) {
+            fontWeight = Typeface.NORMAL;
+        }
+        Typeface font = Typeface.create(Typeface.SANS_SERIF, fontWeight);
         mTextPaint.setTypeface(font);
         mTextPaint.setTextSize(sp2px(mTextSize));
     }
@@ -262,5 +285,15 @@ public class LinearGradientView extends View {
     public int sp2px(float spValue) {
         final float fontScale = getResources().getDisplayMetrics().scaledDensity;
         return (int) (spValue * fontScale + 0.5f);
+    }
+
+    private int parseNumericFontWeight(String fontWeightString) {
+        // This should be much faster than using regex to verify input and Integer.parseInt
+        return fontWeightString.length() == 3
+                && fontWeightString.endsWith("00")
+                && fontWeightString.charAt(0) <= '9'
+                && fontWeightString.charAt(0) >= '1'
+                ? 100 * (fontWeightString.charAt(0) - '0')
+                : -1;
     }
 }
